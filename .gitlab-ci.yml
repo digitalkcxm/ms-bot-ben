@@ -8,7 +8,7 @@ stages:
 
 integration:
   stage: test
-  image: ubuntu
+  image: ubuntu:20.04
   services:
     - mongo:latest
     - redis:latest
@@ -88,11 +88,11 @@ build_homol:
     - integration
   tags:
     - eks
-    - homol  
+    - homol   
 
 deploy_homol:
   stage: deploy_homol
-  image: ubuntu
+  image: ubuntu:20.04
   before_script:
     - apt update > /dev/null 2>&1 
     - apt install jq git unzip zip curl bash openssl wget rsync tar python3 -y > /dev/null 2>&1
@@ -145,7 +145,7 @@ deploy_homol:
     - build_homol
   tags:
     - eks
-    - homol    
+    - homol
 
 
 create-release:
