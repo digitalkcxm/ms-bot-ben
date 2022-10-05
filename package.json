@@ -1,0 +1,43 @@
+{
+  "name": "bot_ben",
+  "version": "1.0.0",
+  "description": "Bot para fluxos simples",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' ./node_modules/.bin/run.env jest --detectOpenHandles --forceExit --passWithNoTests",
+    "migrate:latest": "./node_modules/.bin/run.env ./node_modules/.bin/knex migrate:latest",
+    "migrate:rollback": "./node_modules/.bin/run.env ./node_modules/.bin/knex migrate:rollback",
+    "migrate:make": "./node_modules/.bin/run.env ./node_modules/.bin/knex migrate:make"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.76.0",
+    "amqplib": "0.8.0",
+    "axios": "0.26.1",
+    "body-parser": "1.20.0",
+    "compression": "1.7.4",
+    "connect-multiparty": "2.2.0",
+    "cors": "2.8.5",
+    "dotenv": "16.0.0",
+    "download-file": "0.1.5",
+    "express": "4.17.3",
+    "express-validator": "6.14.0",
+    "file-type": "^17.1.1",
+    "helmet": "5.0.2",
+    "ioredis": "^5.2.3",
+    "jest": "^29.0.0",
+    "knex": "1.0.7",
+    "moment": "^2.29.4",
+    "pg": "8.7.3",
+    "pino": "7.10.0",
+    "pino-http": "6.6.0",
+    "pino-pretty": "7.6.1",
+    "run.env": "1.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}

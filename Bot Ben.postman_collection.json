@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "2a4b9feb-2479-4dab-a960-e37ba5260064",
+		"name": "Bot Ben",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8383872"
+	},
+	"item": [
+		{
+			"name": "aux",
+			"item": [
+				{
+					"name": "getActions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8500/api/v1/aux/get_actions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"aux",
+								"get_actions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getNextMove",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8500/api/v1/aux/next_move",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"aux",
+								"next_move"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOperator",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8500/api/v1/aux/get_operators",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"aux",
+								"get_operators"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "skill",
+			"item": [
+				{
+					"name": "putSkill",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Cobrança\",\n    \"active\": true,\n    \"entities\": [\n        {\n            \"entity\": \"Saudacao\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"oi\", \"hi\"]\n        },\n        {\n            \"entity\": \"numero\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"1\", \"2\", \"3\", \"4\", \"2\"]\n        },\n        {\n            \"entity\": \"Segunda_via\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"Segunda via\"]\n        },\n        {\n            \"entity\": \"Negociar\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"Negociar divida\"]\n        }\n    ],\n    \"nodes\": [\n        {\n            \"title\": \"Boas vindas\",\n            \"response\": \"Olá, Escolha uma opção a seguir: \\n1: Segunda via\\n2: Negociar\",\n            \"active\": true,\n            \"conditions\": [0],\n            \"nodes\": [{\n                \"title\": \"1: Segunda via\",\n                \"response\": \"Segue abaixo o link da segunda via do seu boleto \\n\\nhttps://segundavia.com \\n\\nAgradecemos peo contato, até mais!\",\n                \"active\": true,\n                \"conditions\": [2],\n                \"actions\": {\"action\": \"finalizar\"},\n                \"next_move\": {\"type\": \"pular_para\", \"node_id\": [0]}\n            },\n            {\n                \"title\": \"2: Negociar\",\n                \"response\": \"Obrigada pelo interesse em negociar com a gente! Aguarde um momento que irei transferir você a um de nossos atendentes\",\n                \"active\": true,\n                \"conditions\": [3],\n                \"actions\": [\n                    {\n                        \"action\": \"transferir_entre_departamentos\",\n                        \"context\": \"2\"\n                    },\n                    {\n                        \"action\": \"falar_com_atendente\"\n                    }\n                ],\n                \"next_move\": {\"type\": \"pular_para\", \"node_id\": [0,0]}\n            }],\n            \"next_move\": {\"type\": \"esperar_resposta\"}\n        },\n        {\n            \"title\": \"Entendi nada\",\n            \"response\": \"Eita não entendi nada\",\n            \"active\": true,\n            \"conditions\": null,\n            \"next_move\": {\"type\": \"esperar_resposta\"}\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8500/api/v1/ia/skill/a1ac7499-b923-4cdd-a015-19df5e778a3a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"ia",
+								"skill",
+								"a1ac7499-b923-4cdd-a015-19df5e778a3a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSkill",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Cobrança\",\n    \"active\": true,\n    \"entities\": [\n        {\n            \"entity\": \"Saudacao\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"oi\", \"hi\"]\n        },\n        {\n            \"entity\": \"numero\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"1\", \"2\", \"3\", \"4\", \"2\"]\n        },\n        {\n            \"entity\": \"Segunda_via\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"Segunda via\"]\n        },\n        {\n            \"entity\": \"Negociar\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"Negociar divida\"]\n        }\n    ],\n    \"nodes\": [\n        {\n            \"title\": \"Boas vindas\",\n            \"response\": \"Olá, Escolha uma opção a seguir: \\n1: Segunda via\\n2: Negociar\",\n            \"active\": true,\n            \"conditions\": [0],\n            \"nodes\": [{\n                \"title\": \"1: Segunda via\",\n                \"response\": \"Segue abaixo o link da segunda via do seu boleto \\n\\nhttps://segundavia.com \\n\\nAgradecemos peo contato, até mais!\",\n                \"active\": true,\n                \"conditions\": [2],\n                \"actions\": {\"action\": \"finalizar\"},\n                \"next_move\": {\"type\": \"pular_para\", \"node_id\": [0]}\n            },\n            {\n                \"title\": \"2: Negociar\",\n                \"response\": \"Obrigada pelo interesse em negociar com a gente! Aguarde um momento que irei transferir você a um de nossos atendentes\",\n                \"active\": true,\n                \"conditions\": [3],\n                \"actions\": [\n                    {\n                        \"action\": \"transferir_entre_departamentos\",\n                        \"context\": \"2\"\n                    },\n                    {\n                        \"action\": \"falar_com_atendente\"\n                    }\n                ],\n                \"next_move\": {\"type\": \"pular_para\", \"node_id\": [0,0]}\n            }],\n            \"next_move\": {\"type\": \"esperar_resposta\"}\n        },\n        {\n            \"title\": \"Entendi nada\",\n            \"response\": \"Eita não entendi nada\",\n            \"active\": true,\n            \"conditions\": null,\n            \"next_move\": {\"type\": \"esperar_resposta\"}\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8500/api/v1/ia/skill/a1ac7499-b923-4cdd-a015-19df5e778a3a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"ia",
+								"skill",
+								"a1ac7499-b923-4cdd-a015-19df5e778a3a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postSkill",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Cobrança\",\n    \"active\": true,\n    \"entities\": [\n        {\n            \"entity\": \"Saudacao\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"oi\", \"hi\"]\n        },\n        {\n            \"entity\": \"numero\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"1\", \"2\", \"3\", \"4\", \"2\"]\n        },\n        {\n            \"entity\": \"Segunda_via\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"Segunda via\"]\n        },\n        {\n            \"entity\": \"Negociar\",\n            \"active\": true,\n            \"type\": \"text\",\n            \"value\": [\"Negociar divida\"]\n        }\n    ],\n    \"nodes\": [\n        {\n            \"title\": \"Boas vindas\",\n            \"response\": \"Olá, Escolha uma opção a seguir: \\n1: Segunda via\\n2: Negociar\",\n            \"active\": true,\n            \"conditions\": [0],\n            \"nodes\": [{\n                \"title\": \"1: Segunda via\",\n                \"response\": \"Segue abaixo o link da segunda via do seu boleto \\n\\nhttps://segundavia.com \\n\\nAgradecemos peo contato, até mais!\",\n                \"active\": true,\n                \"conditions\": [2],\n                \"actions\": [{\"action\": \"finalizar\"}],\n                \"next_move\": {\"type\": \"pular_para\", \"node_id\": [0]}\n            },\n            {\n                \"title\": \"2: Negociar\",\n                \"response\": \"Obrigada pelo interesse em negociar com a gente! Aguarde um momento que irei transferir você a um de nossos atendentes\",\n                \"active\": true,\n                \"conditions\": [3],\n                \"actions\": [\n                    {\n                        \"action\": \"transferir_entre_departamentos\",\n                        \"params\": {\n                            \"department_to\": 2\n                        }\n                    },\n                    {\n                        \"action\": \"falar_com_atendente\"\n                    }\n                ],\n                \"next_move\": {\"type\": \"pular_para\", \"node_id\": [0,0]}\n            }],\n            \"next_move\": {\"type\": \"esperar_resposta\"}\n        },\n        {\n            \"title\": \"Não entendi nada\",\n            \"response\": \"Não entendi nada\",\n            \"active\": true,\n            \"conditions\": null,\n            \"next_move\": {\"type\": \"esperar_resposta\"}\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8500/api/v1/ia/skill",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"ia",
+								"skill"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "conversation",
+			"item": [
+				{
+					"name": "postConversation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "a8cb5ca5b4480634a6051c26dfeeed2c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"protocol\": {\n        \"id\": 12345,\n        \"department\": 1,\n        \"phone\": \"11949030632\",\n        \"channel\": \"whatsapp\"\n    },\n    \"message\": {\n        \"type\": \"text\",\n        \"body\": \"negociar\"\n    },\n    \"ia_id\": \"a1ac7499-b923-4cdd-a015-19df5e778a3a\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8500/api/v1/ia/chat",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8500",
+							"path": [
+								"api",
+								"v1",
+								"ia",
+								"chat"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8500/api/v1/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8500",
+					"path": [
+						"api",
+						"v1",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
