@@ -178,7 +178,6 @@ export default class IAController {
         description: req.body.description,
         company_id: req.headers.authorization
       }
-      console.log(ia_data)
 
       await this.iaModel.update(ia_data)
 
@@ -201,7 +200,7 @@ export default class IAController {
           value: JSON.parse(entity.value)
         })
       }))
-      console.log(entities)
+
       let arrNodes = req.body.nodes
       let nodes = []
       let updateAfter = []
