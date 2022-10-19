@@ -100,11 +100,8 @@
 			"item": [
 				{
 					"name": "putSkill",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
