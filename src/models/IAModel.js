@@ -27,7 +27,6 @@ export default class IAModel {
   async create(obj) {
     try {
       const result = await this.database('ia').returning(['ia.id']).insert(obj)
-      console.log(result)
       return result
 
     } catch (err) {

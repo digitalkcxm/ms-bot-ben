@@ -41,7 +41,6 @@ export default class NodeModel {
         .returning(['nodes.id'])
         .update(obj)
         .where({ id })
-      console.log(result)
       return result
 
     } catch (err) {
