@@ -4,7 +4,6 @@ async function checkCompany(req, res, next) {
   try {
     const instance = _instance()
     const result = await instance.get(`/api/v1/company/token/${req.headers.authorization}`)
-    console.log(result.response)
 
     if (!result.data.activated) return res.status(400).send({ error: 'A company se encontra desativada.' })
     if (!result.data.url_api) return res.status(400).send({ error: 'Houve um erro ao tentar criar a company.' })

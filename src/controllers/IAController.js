@@ -206,12 +206,10 @@ export default class IAController {
       let updateAfter = []
       if (Array.isArray(arrNodes)) {
         const saveNode = async (node, previous_node = null) => {
-          console.log(node)
           const nextNodes = (Array.isArray(node.nodes) && node.nodes.length > 0) && Object.values(node.nodes)
-          const conditions = Array.isArray(node.conditions) && node.conditions.map(indexEntity => entities[indexEntity] ? entities[indexEntity].id : entities[indexEntity])
+          const conditions = Array.isArray(node.conditions) && node.conditions.map(entity => entities[entity] ? entities[entity].id : entity)
           const { next_move, actions } = node
           delete node.nodes
-
           const node_data = Object.assign({}, node, {
             ia_id: ia_data.id,
             conditions: JSON.stringify(conditions),

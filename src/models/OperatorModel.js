@@ -12,7 +12,6 @@ export default class OperatorModel {
 
   async get() {
     return Object.keys(OperatorModel).map(operator => {
-      console.log(OperatorModel[operator])
       return OperatorModel[operator]
     })
   }
