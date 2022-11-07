@@ -213,7 +213,7 @@ export default class IAController {
           const node_data = Object.assign({}, node, {
             ia_id: ia_data.id,
             conditions: JSON.stringify(conditions),
-            next_move: JSON.stringify({ type: next_move.type })
+            next_move: JSON.stringify(next_move)
           })
 
           //transforma action em JSON para salvar no banco
