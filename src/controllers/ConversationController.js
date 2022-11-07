@@ -149,7 +149,7 @@ export default class ConversationController {
 
     const nextMove = {
       "esperar_resposta": (currNode) => {
-        if (Array.isArray(currNode.match) && currNode.match[0] !== 'anything_else') {
+        if (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else' || (Array.isArray(currNode.nodes) && currNode.nodes.length > 0))) {
           this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
         }
 
@@ -158,7 +158,7 @@ export default class ConversationController {
           res.status(201).send(responses)
         } else {
           // resposta simples 
-          res.status(201).send([{ response: currNode.response, match: currNode.match }])
+          res.status(201).send([currNode])
         }
       },
       "pular_para": (currNode) => {
@@ -177,6 +177,5 @@ export default class ConversationController {
     }
 
     runNode(reqNode)
-
   }
 }
