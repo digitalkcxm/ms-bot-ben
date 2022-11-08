@@ -19,7 +19,8 @@ export default class ConversationController {
 
   // altera sessao
   async setSession({ company_id, ia_id, protocol_id, data }) {
-    await this.redis.set(`msBotBen:${ia_id}:${company_id}:${protocol_id}`, JSON.stringify(data))
+    const redistest = await this.redis.set(`msBotBen:${ia_id}:${company_id}:${protocol_id}`, JSON.stringify(data))
+    //console.log("redis teste: ", redistest)
   }
 
   async sendMessage(req, res) {
@@ -27,6 +28,14 @@ export default class ConversationController {
     const getEntity = await this.entityModel.get(req.body.ia_id)
     const getNodes = await this.nodeModel.get(req.body.ia_id)
     const session = await this.getSession({ company_id: req.headers.authorization, ia_id: req.body.ia_id, protocol_id: req.body.protocol.id })
+
+
+    if (getNodes.length === 0) {
+      res.status(400).send({
+        error: "ID da skill não encontrada"
+      })
+      return
+    }
 
     //obj para passar nas actions
     const paramsAction = {
@@ -128,7 +137,14 @@ export default class ConversationController {
 
       const entitiesAvailable = Array.isArray(getEntity) && getEntity.filter(({ id }) => nodes.find(({ conditions }) => Array.isArray(conditions) && conditions.includes(id)))
       const match = entityConfidence(findEntity({ entities: entitiesAvailable, message }))
-      return findNode({ nodes, match })
+
+      const actualNode = findNode({ nodes, match })
+
+      const childNodes = Array.isArray(getNodes) && getNodes.filter(({ previous_node }) => {
+        return previous_node === actualNode.id
+      })
+
+      return Object.assign(actualNode, { nodes: childNodes.length > 0 })
     }
 
     /*
@@ -149,7 +165,8 @@ export default class ConversationController {
 
     const nextMove = {
       "esperar_resposta": (currNode) => {
-        if (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else' || (Array.isArray(currNode.nodes) && currNode.nodes.length > 0))) {
+        //console.log("esperar_resposta currNode: ", currNode)
+        if (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else' || currNode.nodes)) {
           this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
         }
 
