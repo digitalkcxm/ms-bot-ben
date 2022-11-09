@@ -175,13 +175,13 @@ export default class ConversationController {
 
     const nextMove = {
       "esperar_resposta": (currNode) => {
-        if (currNode.match[0] !== 'anything_else') {
+        if (currNode.match && currNode.match[0] !== 'anything_else') {
           const currEntity = getEntity.find(({ id }) => currNode.match[0] === id)
           if (currEntity && regexAvailable[currEntity.type]) {
             currNode.regex_match = regexAvailable[currEntity.type](message)
           }
         }
-        if (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else' || currNode.nodes)) {
+        if (!currNode.match || (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else') || currNode.nodes)) {
           this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
         }
 
