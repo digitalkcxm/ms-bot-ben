@@ -20,16 +20,13 @@ export default class ConversationController {
   // altera sessao
   async setSession({ company_id, ia_id, protocol_id, data }) {
     const redistest = await this.redis.set(`msBotBen:${ia_id}:${company_id}:${protocol_id}`, JSON.stringify(data))
-    //console.log("redis teste: ", redistest)
   }
 
   async sendMessage(req, res) {
     const message = req.body.message.body
-    const getEntity = await this.entityModel.get(req.body.ia_id)
-    const getNodes = await this.nodeModel.get(req.body.ia_id)
+    const getEntity = await this.entityModel.get(req.body.ia_id, null, true)
+    const getNodes = await this.nodeModel.get(req.body.ia_id, null, true)
     const session = await this.getSession({ company_id: req.headers.authorization, ia_id: req.body.ia_id, protocol_id: req.body.protocol.id })
-
-
     if (getNodes.length === 0) {
       res.status(400).send({
         error: "ID da skill não encontrada"
@@ -49,10 +46,15 @@ export default class ConversationController {
       message: req.body.message.body
     }
 
+    const regexAvailable = {
+      'regex-cpf_cnpj': (word) => word.match(/([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})/g),
+      'regex-email': (word) => word.match(/([a-z]){1,}([a-z0-9._-]){1,}([@]){1}([a-z]){2,}([.]){1}([a-z]){2,}([.]?){1}([a-z]?){2,}/g)
+    }
+
     //Função para encontrar a entidade da frase enviada pelo cliente
     const findEntity = ({ entities, message }) => {
       //Primeiro pesquisa pela frase inteira nos valores
-      const matchFullPhrase = Array.isArray(entities) && entities.find(({ value }) => value.includes(slugfy(message)))
+      const matchFullPhrase = Array.isArray(entities) && entities.find(({ value }) => Array.isArray(value) && value.includes(slugfy(message)))
 
       //Se achar, retorna valor
       if (matchFullPhrase) {
@@ -64,7 +66,15 @@ export default class ConversationController {
 
       const matchWords = arrWords.reduce((prev, curr) => {
         const wordCompare = slugfy(curr).replace(/[^a-z0-9]/gi, '').toLocaleLowerCase()
-        Array.isArray(entities) && entities.filter(({ value }) => value.map(word => slugfy(word).toLocaleLowerCase()).filter(word => word.includes(wordCompare) || wordCompare.includes(word)).length > 0).map(({ id }) => {
+        Array.isArray(entities) && entities.filter(({ value, type }) => {
+          if (type === 'text') {
+            return value.map(word => slugfy(word).toLocaleLowerCase()).filter(word => word.includes(wordCompare) || wordCompare.includes(word)).length > 0
+          } else {
+            if (regexAvailable[type]) {
+              return !!regexAvailable[type](message)
+            }
+          }
+        }).map(({ id }) => {
           prev[id] = prev[id] ? prev[id] + 1 : 1
           prev.total = prev.total + 1
         })
@@ -165,7 +175,12 @@ export default class ConversationController {
 
     const nextMove = {
       "esperar_resposta": (currNode) => {
-        //console.log("esperar_resposta currNode: ", currNode)
+        if (currNode.match[0] !== 'anything_else') {
+          const currEntity = getEntity.find(({ id }) => currNode.match[0] === id)
+          if (currEntity && regexAvailable[currEntity.type]) {
+            currNode.regex_match = regexAvailable[currEntity.type](message)
+          }
+        }
         if (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else' || currNode.nodes)) {
           this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
         }
@@ -181,7 +196,6 @@ export default class ConversationController {
       "pular_para": (currNode) => {
         const jumpTo = (node) => {
           runNode(node)
-          //nextMove[node.next_move.type](node)
         }
         responses.push(currNode)
         const nodeJump = getNodes.find(({ id }) => currNode.next_move.node_id === id)
@@ -190,7 +204,10 @@ export default class ConversationController {
     }
 
     const runNode = (currNode) => {
-      nextMove[currNode.next_move.type](currNode)
+      if (!currNode.next_move) {
+        return res.status(400).send({ error: "Ocorreu um erro ao executar a Skill: nenhum nó foi encontrado", node: currNode })
+      }
+      nextMove[currNode.next_move?.type](currNode)
     }
 
     runNode(reqNode)

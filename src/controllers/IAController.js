@@ -34,13 +34,11 @@ export default class IAController {
         const goThroughData = (list) => list.map(node => {
           let nodes = getChildren(node.id)
           if (nodes.length > 0) {
-            node.nodes = nodes
+            node.nodes = nodes.map((nodeChild) => {
+              delete nodeChild.previous_node
+              return nodeChild
+            })
           }
-
-          if (!node.previous_node) {
-            delete node.previous_node
-          }
-
           return node
         })
 

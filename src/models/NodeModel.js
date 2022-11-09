@@ -5,12 +5,16 @@ export default class NodeModel {
     this.logger = logger
   }
 
-  async get(ia_id, id = null) {
+  async get(ia_id, id = null, active = null) {
     try {
       const whereIn = { ia_id }
 
       if (id) {
         whereIn.id = id
+      }
+
+      if (active) {
+        whereIn.active = active
       }
 
       return await this.database('nodes')
