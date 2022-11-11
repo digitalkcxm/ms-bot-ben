@@ -59,7 +59,8 @@ export default class IAController {
       // salvar Ben I.A
       let ia_data = {
         description: req.body.description,
-        company_id: req.headers.authorization
+        company_id: req.headers.authorization,
+        active: req.body.active
       }
 
       const ia_id = await this.iaModel.create(ia_data)
@@ -174,7 +175,8 @@ export default class IAController {
       let ia_data = {
         id: req.body.id,
         description: req.body.description,
-        company_id: req.headers.authorization
+        company_id: req.headers.authorization,
+        active: req.body.active
       }
 
       await this.iaModel.update(ia_data)
