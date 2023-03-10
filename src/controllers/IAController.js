@@ -88,12 +88,13 @@ export default class IAController {
         const saveNode = async (node, previous_node = null) => {
           const nextNodes = (Array.isArray(node.nodes) && node.nodes.length > 0) && Object.values(node.nodes)
           const conditions = Array.isArray(node.conditions) && node.conditions.map(indexEntity => entities[indexEntity].id)
-          const { next_move, actions } = node
+          const { next_move, actions, context } = node
           delete node.nodes
 
           const node_data = Object.assign({}, node, {
             ia_id: ia_data.id,
             conditions: conditions ? JSON.stringify(conditions) : null,
+            context: context ? JSON.stringify(context) : null,
             next_move: JSON.stringify({ type: next_move.type })
           })
 
@@ -119,7 +120,8 @@ export default class IAController {
 
           Object.assign(node_data, {
             next_move,
-            conditions
+            conditions,
+            context
           })
 
           if (Array.isArray(nextNodes) && nextNodes.length > 0) {
@@ -208,12 +210,13 @@ export default class IAController {
         const saveNode = async (node, previous_node = null) => {
           const nextNodes = (Array.isArray(node.nodes) && node.nodes.length > 0) && Object.values(node.nodes)
           const conditions = Array.isArray(node.conditions) && node.conditions.map(entity => entities[entity] ? entities[entity].id : entity)
-          const { next_move, actions } = node
+          const { next_move, actions, context } = node
           delete node.nodes
           const node_data = Object.assign({}, node, {
             ia_id: ia_data.id,
             conditions: JSON.stringify(conditions),
-            next_move: JSON.stringify(next_move)
+            next_move: JSON.stringify(next_move),
+            context: JSON.stringify(context)
           })
 
           //transforma action em JSON para salvar no banco
@@ -241,7 +244,8 @@ export default class IAController {
 
           Object.assign(node_data, {
             next_move,
-            conditions
+            conditions,
+            context
           })
           if (Array.isArray(nextNodes) && nextNodes.length > 0) {
             const resultNodes = await goThroughData(nextNodes, node_data.id)

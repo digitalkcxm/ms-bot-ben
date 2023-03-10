@@ -1,6 +1,6 @@
 exports.up = (knex, Promise) => {
     return knex.schema.createTable('nodes', (table) => {
-      table.uuid('id').unique().notNullable().primary().defaultTo(knex.raw('uuid_generate_v4()'))
+      table.uuid('id').unique().notNullable().primary().defaultTo(knex.raw('gen_random_uuid ()'))
       table.uuid('ia_id').notNullable().unsigned()
       table.string('title')
       table.json('conditions')
