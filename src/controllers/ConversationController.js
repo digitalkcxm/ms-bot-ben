@@ -173,6 +173,26 @@ export default class ConversationController {
     const { response, match } = reqNode
     const responses = []
 
+    /**
+     * Variaveis de contexto
+     * 
+     */
+
+    const setContext = async (context = {}, listContext, params) => {
+      return listContext.reduce(({curr, prev}) => {
+        if(curr.type === 'increment'){
+          const add = curr.value ?? 1
+          prev[curr.key] = Number(prev[curr.key]) ? prev[curr.key] + add : add
+        }else if(curr.type === 'user_response'){
+          prev[curr.key] = params.message
+        }else {
+          prev[curr.key] = curr.value
+        }
+        
+        return prev
+      }, context )
+    }
+
     const nextMove = {
       "esperar_resposta": (currNode) => {
         if (currNode.match && currNode.match[0] !== 'anything_else') {
@@ -182,7 +202,8 @@ export default class ConversationController {
           }
         }
         if (!currNode.match || (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else') || currNode.nodes)) {
-          this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
+          const context = setContext(session.context, currNode.context, paramsAction)
+          this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, context, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
         }
 
         if (responses.length > 0) {

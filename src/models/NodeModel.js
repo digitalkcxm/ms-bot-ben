@@ -18,7 +18,7 @@ export default class NodeModel {
       }
 
       return await this.database('nodes')
-        .select('id', 'title', 'response', 'conditions', 'actions', 'next_move', 'previous_node', 'active', 'created_at', 'updated_at')
+        .select('id', 'title', 'response', 'conditions', 'actions', 'context', 'next_move', 'previous_node', 'active', 'created_at', 'updated_at')
         .where(whereIn)
 
     } catch (err) {
