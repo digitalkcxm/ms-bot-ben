@@ -34,6 +34,8 @@ export default class ConversationController {
       return
     }
 
+    console.log("sendMessage: ", message)
+
     //obj para passar nas actions
     const paramsAction = {
       protocol: req.body.protocol,
@@ -55,7 +57,7 @@ export default class ConversationController {
     const findEntity = ({ entities, message }) => {
       //Primeiro pesquisa pela frase inteira nos valores
       const matchFullPhrase = Array.isArray(entities) && entities.find(({ value }) => Array.isArray(value) && value.includes(slugfy(message)))
-
+      console.log("findEntity matchFullPhrase: ", matchFullPhrase)
       //Se achar, retorna valor
       if (matchFullPhrase) {
         return { [matchFullPhrase.id]: 100 }
@@ -70,6 +72,7 @@ export default class ConversationController {
           if (type === 'text') {
             return value.map(word => slugfy(word).toLocaleLowerCase()).filter(word => word.includes(wordCompare) || wordCompare.includes(word)).length > 0
           } else {
+
             if (regexAvailable[type]) {
               return !!regexAvailable[type](message)
             }
@@ -85,13 +88,19 @@ export default class ConversationController {
         return { "anything_else": 100 }
       }
 
+      console.log("findEntity matchWords: ", matchWords)
+
       const total = Number(matchWords.total)
       delete matchWords.total
+
+      console.log("findEntity total: ", total)
 
       const resultMatch = Object.keys(matchWords).reduce((prev, key) => {
         prev[key] = Number(matchWords[key] * 100 / total).toFixed(2)
         return prev
       }, {})
+
+      console.log("findEntity resultMatch: ", resultMatch)
 
       return resultMatch
     }
@@ -178,23 +187,42 @@ export default class ConversationController {
      * 
      */
 
-    const setContext = async (context = {}, listContext, params) => {
-      return listContext.reduce(({curr, prev}) => {
-        if(curr.type === 'increment'){
+    const setContext = (context = {}, listContext = [], params) => {
+      console.log("linha 191: ",{
+        contexto: context, 
+        lista: listContext, 
+        parametro: params
+      })
+      if(!Array.isArray(listContext)) {
+        return context
+      }
+       return listContext.reduce((prev, curr) => {
+        if(!curr.type){
+        prev[curr.key] = curr.value
+      }else {
+        if(curr.type === 'get_response'){
+          prev[curr.key] = params.message
+        }else if(curr.type === 'increment'){
           const add = curr.value ?? 1
           prev[curr.key] = Number(prev[curr.key]) ? prev[curr.key] + add : add
-        }else if(curr.type === 'user_response'){
-          prev[curr.key] = params.message
-        }else {
-          prev[curr.key] = curr.value
         }
+      }
         
         return prev
       }, context )
+
     }
 
     const nextMove = {
       "esperar_resposta": (currNode) => {
+        // changed 'context' key to 'list_context', return 'context' with current session context plus list_context
+        currNode.list_context = currNode.context
+        console.log("linha 220: ", session)
+        const context = setContext(session.context, currNode.list_context, paramsAction)
+        console.log("linha 216: ", context)
+        // set again context, but now is setContext
+        currNode.context = context
+
         if (currNode.match && currNode.match[0] !== 'anything_else') {
           const currEntity = getEntity.find(({ id }) => currNode.match[0] === id)
           if (currEntity && regexAvailable[currEntity.type]) {
@@ -202,8 +230,7 @@ export default class ConversationController {
           }
         }
         if (!currNode.match || (Array.isArray(currNode.match) && (currNode.match[0] !== 'anything_else') || currNode.nodes)) {
-          const context = setContext(session.context, currNode.context, paramsAction)
-          this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, context, data: { previous_node: currNode.id, protocol: paramsAction.protocol } })
+          this.setSession({ ia_id: paramsAction.ia_id, company_id: paramsAction.company_id, protocol_id: paramsAction.protocol.id, data: { previous_node: currNode.id, protocol: paramsAction.protocol, context } })
         }
 
         if (responses.length > 0) {
