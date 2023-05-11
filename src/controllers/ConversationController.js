@@ -50,7 +50,11 @@ export default class ConversationController {
 
     const regexAvailable = {
       'regex-cpf_cnpj': (word) => word.match(/([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})/g),
-      'regex-email': (word) => word.match(/([a-z]){1,}([a-z0-9._-]){1,}([@]){1}([a-z]){2,}([.]){1}([a-z]){2,}([.]?){1}([a-z]?){2,}/g)
+      'regex-email': (word) => word.match(/([a-z]){1,}([a-z0-9._-]){1,}([@]){1}([a-z]){2,}([.]){1}([a-z]){2,}([.]?){1}([a-z]?){2,}/g),
+      'regex-number': (word, number) => {
+        const rgxp = new RegExp(`(^|\\D)${number}(\\D|$)`, "g")
+        return word.match(rgxp)
+      },
     }
 
     //Função para encontrar a entidade da frase enviada pelo cliente
@@ -74,7 +78,8 @@ export default class ConversationController {
           } else {
 
             if (regexAvailable[type]) {
-              return !!regexAvailable[type](message)
+              const currValue = (Array.isArray(value) && value.length > 0) ? value[0] : null
+              return !!regexAvailable[type](message, currValue)
             }
           }
         }).map(({ id }) => {
