@@ -72,9 +72,10 @@ export default class ConversationController {
 
       const matchWords = arrWords.reduce((prev, curr) => {
         const wordCompare = slugfy(curr).replace(/[^a-z0-9]/gi, '').toLocaleLowerCase()
+        
         Array.isArray(entities) && entities.filter(({ value, type }) => {
           if (type === 'text') {
-            return value.map(word => slugfy(word).toLocaleLowerCase()).filter(word => word.includes(wordCompare) || wordCompare.includes(word)).length > 0
+            return value.map(word => slugfy(word).toLocaleLowerCase()).filter(word => word.match(new RegExp(`\\b${wordCompare}\\b`, "g")) || wordCompare.includes(word)).length > 0
           } else {
 
             if (regexAvailable[type]) {
