@@ -71,7 +71,8 @@ export default class ConversationController {
       let arrWords = slugfy(message).split('-')
 
       const matchWords = arrWords.reduce((prev, curr) => {
-        const wordCompare = slugfy(curr).replace(/[^a-z0-9]/gi, '').toLocaleLowerCase()
+        let wordCompare = slugfy(curr)
+        wordCompare = wordCompare ?  wordCompare.replace(/[^a-z0-9]/gi, '').toLocaleLowerCase() : curr
         
         Array.isArray(entities) && entities.filter(({ value, type }) => {
           if (type === 'text') {
