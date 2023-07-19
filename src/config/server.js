@@ -1,3 +1,4 @@
+import tracing from './elastic-apm.js'
 import http from 'http'
 import helmet from 'helmet'
 import express from 'express'
@@ -22,11 +23,11 @@ cors(app)
 app.use(helmet())
 app.use(compression())
 
-routes(app, database, logger, redis)
+routes(app, database, logger, redis, tracing)
 //queue()
 function startServer() {
   app.use(httpLogger)
   server.listen(process.env.PORT, () => logger.info(`Server running in port ${process.env.PORT}`))
 }
 
-export { startServer, server, app, database, logger, redis }
+export { startServer, server, app, database, logger, redis, tracing }
