@@ -75,7 +75,7 @@ export default class ConversationController {
         if(!curr) return  prev
         let wordCompare = slugfy(curr)
         wordCompare = wordCompare ?  wordCompare.replace(/[^a-z0-9]/gi, '').toLocaleLowerCase() : curr
-        
+
         Array.isArray(entities) && entities.filter(({ value, type }) => {
           if (type === 'text') {
             return value.map(word => slugfy(word).toLocaleLowerCase()).filter(word => word.match(new RegExp(`\\b${wordCompare}\\b`, "g")) || wordCompare.includes(word)).length > 0
@@ -177,11 +177,11 @@ export default class ConversationController {
 
     /*
     * Verifica primeiro o next move desse nó
-    * Se for "Esperar Resposta": 
+    * Se for "Esperar Resposta":
     *     Verifica se tem action, se tiver executa e depois dispara a resposta
     * Se for "Pular para":
     *     Guarda a resposta e verifica nó setado e valida o next move
-    *         Se for "Esperar Resposta": 
+    *         Se for "Esperar Resposta":
     *             Verifica se tem action, se tiver executa e depois dispara a resposta do nó anterior + nó atual
     *         Se for "Pular para":
     *             Guarda a resposta e verifica nó setado e verifica o next move
@@ -193,13 +193,13 @@ export default class ConversationController {
 
     /**
      * Variaveis de contexto
-     * 
+     *
      */
 
     const setContext = (context = {}, listContext = [], params) => {
       console.log("linha 191: ",{
-        contexto: context, 
-        lista: listContext, 
+        contexto: context,
+        lista: listContext,
         parametro: params
       })
       if(!Array.isArray(listContext)) {
@@ -216,7 +216,7 @@ export default class ConversationController {
           prev[curr.key] = Number(prev[curr.key]) ? prev[curr.key] + add : add
         }
       }
-        
+
         return prev
       }, context )
 
@@ -246,7 +246,7 @@ export default class ConversationController {
           responses.push(currNode)
           res.status(201).send(responses)
         } else {
-          // resposta simples 
+          // resposta simples
           res.status(201).send([currNode])
         }
       },
@@ -261,7 +261,7 @@ export default class ConversationController {
     }
 
     const runNode = (currNode) => {
-      if (!currNode.next_move) {
+      if (!currNode || !currNode.next_move) {
         return res.status(400).send({ error: "Ocorreu um erro ao executar a Skill: nenhum nó foi encontrado", node: currNode })
       }
       nextMove[currNode.next_move?.type](currNode)
