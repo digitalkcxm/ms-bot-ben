@@ -6,7 +6,9 @@ export const Action = {
   consultar_crm: 'consultar_crm',
   atualizar_crm: 'atualizar_crm',
   cadastrar: 'cadastrar',
-  consultar_cep: 'consultar_cep'
+  consultar_cep: 'consultar_cep',
+  send_list: 'send_list',
+  send_button: 'send_button'
 }
 export default class ActionModel {
   static finalizar = new ActionModel({ action: Action.finalizar, only: true })
@@ -17,6 +19,8 @@ export default class ActionModel {
   static atualizar_crm = new ActionModel({ action: Action.atualizar_crm })
   static cadastrar = new ActionModel({ action: Action.cadastrar })
   static consultar_cep = new ActionModel({ action: Action.consultar_cep })
+  static send_list = new ActionModel({ action: Action.send_list })
+  static send_button = new ActionModel({ action: Action.send_button })
 
   constructor({ action, params, only }) {
     this.action = action
