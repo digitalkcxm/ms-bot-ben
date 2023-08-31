@@ -49,6 +49,7 @@ export default class ConversationController {
     }
 
     const regexAvailable = {
+      'regex-data': (word) => word.match(/^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/g),
       'regex-cpf_cnpj': (word) => word.match(/([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})/g),
       'regex-email': (word) => word.match(/([a-z]){1,}([a-z0-9._-]){1,}([@]){1}([a-z]){2,}([.]){1}([a-z]){2,}([.]?){1}([a-z]?){2,}/g),
       'regex-number': (word, number) => {
