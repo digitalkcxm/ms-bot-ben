@@ -12,11 +12,12 @@ export default (database, logger, redis) => {
 
   //router.use(formatAuditoria)
   router.use((req, res, next) => checkCompany(req, res, next))
-
+  
   router.post('/skill', (req, res) => iaController.create(req, res))
   router.put('/skill', (req, res) => iaController.update(req, res))
   router.get('/skill/:id?', (req, res) => iaController.get(req, res))
   router.post('/chat', (req, res) => chatController.sendMessage(req, res))
+  router.post('/delete_session', (req, res) => chatController.remSession(req, res))
 
   return router
 }
