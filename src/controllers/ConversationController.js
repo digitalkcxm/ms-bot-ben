@@ -11,6 +11,18 @@ export default class ConversationController {
     this.entityModel = new EntitiesModel(database, logger)
   }
 
+  async remSession(req, res){
+    try{
+
+      const delSession = await this.redis.del(`msBotBen:${req.body.ia_id}:${req.headers.authorization}:${req.body.protocol}`)
+      console.log("msbotben delSession: ", delSession)
+
+      return res.status(200).send({message: `session deleted successfully.`, result: delSession})
+    }catch(err){
+      return res.status(400).send({ error: "Ocorreu um erro ao executar a Skill: nenhum nó foi encontrado", session_msbotben: err })
+    }
+  }
+
   // retorna session com base na company_id e protocol_id
   async getSession({ company_id, ia_id, protocol_id }) {
     const session = await this.redis.get(`msBotBen:${ia_id}:${company_id}:${protocol_id}`)
@@ -19,6 +31,7 @@ export default class ConversationController {
 
   // altera sessao
   async setSession({ company_id, ia_id, protocol_id, data }) {
+
     const redistest = await this.redis.set(`msBotBen:${ia_id}:${company_id}:${protocol_id}`, JSON.stringify(data))
   }
 
