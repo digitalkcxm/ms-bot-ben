@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "start:prod": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' ./node_modules/.bin/run.env jest --detectOpenHandles --forceExit --passWithNoTests",
     "migrate:latest": "./node_modules/.bin/run.env ./node_modules/.bin/knex migrate:latest",
