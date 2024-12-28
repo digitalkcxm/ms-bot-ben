@@ -69,8 +69,6 @@ typings/
 .idea
 *.rdb
 
-package-*
-
 #coverage
 __tests__/coverage/
 .scannerwork/
