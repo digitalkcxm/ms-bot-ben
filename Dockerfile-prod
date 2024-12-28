@@ -6,12 +6,10 @@ COPY package*.json ./
 
 RUN npm ci
 
-# RUN npm audit fix
-
 COPY . .
-
-RUN npm run migrate:latest
 
 EXPOSE 80
 
-CMD ["npm", "run", "start:prod"]
+RUN chmod +x scripts/entrypoint.sh
+
+ENTRYPOINT ["/usr/src/app/scripts/entrypoint.sh"]
